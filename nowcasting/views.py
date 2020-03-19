@@ -4,33 +4,41 @@ import glob2
 import os
 import numpy as np
 from itertools import chain
-# csv_file = glob2.glob(os.path.join(data_path, 'Factor',"*.csv"))
-# Create your views here.
+
 def index(request):
     data_path = os.path.join(os.getcwd(),'nowcasting', 'csv_data')
-    # Stacked_bar Chart data. 가장 마지막으로 업데이트된 csv파일을 불러온다.
+    
+    # Stacked_bar Chart data. 
+    # 디렉토리의 가장 마지막에 있는 파일을 불러온다.
     factor_file = glob2.glob(os.path.join(data_path, 'Factor',"*.csv"))[-1]
-    # print(csv_file)
     factor = pd.read_csv(factor_file, index_col = 0)
-    # 최근 두 달 치의 factor_block 데이터를 가져온다.
+    
+    # 뒤에서부터 8개의 row만 가져온다.
     factor_list = [list(factor[i].values[-8:]) for i in factor.columns]
     factor_xlabel = list(factor.index[-8:])
 
 
     # Line Chart for GDP 1 ~ 4
     gdp_file = glob2.glob(os.path.join(data_path, 'Historical_data',"*.csv"))[-1]
+    
+    # calender column을 index로 한 csv 파일을 불러온다.
     gdp = pd.read_csv(gdp_file, index_col = 'calender')
+    
+    # datetime 형태로 변환 / GDP1, GDP2, GDP3, GDP4 column만 추출한다.
     gdp.index = pd.to_datetime(gdp.index)
     gdp = gdp[['GDP1', 'GDP2', 'GDP3','GDP4']]
     
-    # 매주 일요일 데이터만 추출, 14개 데이터 (14주 전 ~ 이번 주까지)
+    # weekday == 6은 sunday라는 뜻. 일요일 row만 추출한 뒤 뒤에서부터 14개 row만 가져온다. 
+    # = 14주치 데이터.
     gdp_data = gdp.loc[gdp.index.weekday == 6][-14:]
     
     gdp_list = [list(gdp_data[i] * 100) for i in gdp_data.columns]
     gdp_xlabel = list(gdp_data.index.strftime("%Y-%m-%d"))
+    
+    # linePlot x축과 y축 범위 설정을 위한 값
     gdp_min, gdp_max = min(chain(*gdp_list)), max(chain(*gdp_list))
-    print(gdp_min, gdp_max)
-    data1 = [100, 70, 90, 70, 85, 60, 75, 60, 90, 80, 110, 100]
+    
+    # html에 json 형태로 데이터를 전송. html의 script에서 인자로 받아 실행한다.
     return render(request, 'dashboard.html', 
         context = {
             'linePlot_data' : {
