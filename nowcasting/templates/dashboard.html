@@ -62,46 +62,6 @@
       </div>
     </div>
     <div class="main-panel" data = 'blue'>
-      <!-- Navbar -->
-      <!-- <nav class="navbar navbar-expand-lg navbar-absolute navbar-transparent">
-        <div class="container-fluid">
-          <div class="navbar-wrapper">
-            <div class="navbar-toggle d-inline">
-              <button type="button" class="navbar-toggler">
-                <span class="navbar-toggler-bar bar1"></span>
-                <span class="navbar-toggler-bar bar2"></span>
-                <span class="navbar-toggler-bar bar3"></span>
-              </button>
-            </div>
-            <a class="navbar-brand" href="./dashboard.html">Dashboard</a>
-          </div>
-          
-          <div class="collapse navbar-collapse" id="navigation">
-            <ul class="navbar-nav ml-auto">
-              <li class="dropdown nav-item">
-                <div class="dropdown-toggle nav-link" data-toggle="dropdown">
-                  <div class="photo">
-                  </div>
-                </div>
-              </li>
-              <li class="separator d-lg-none"></li>
-            </ul>
-          </div>
-        </div>
-      </nav> -->
-      <!-- <div class="modal modal-search fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModal" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="SEARCH">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <i class="tim-icons icon-simple-remove"></i>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div> -->
-      <!-- End Navbar -->
       <div class="content">
         <div class="row">
           <div class="col-12">
@@ -162,29 +122,62 @@
           <div class="col-sm-12">
             <div class="card card-chart">
               <div class="card-header">
-                <h5 class="card-category">PCA Value</h5>
-                <h3 class="card-title"><i class="tim-icons icon-zoom-split text-info"></i> Block_Factor</h3>
+                <!-- <h5 class="card-category">PCA Value</h5>
+                <h3 class="card-title"><i class="tim-icons icon-zoom-split text-info"></i> Block_Factor</h3> -->
+                <div class="row">
+                  <div class="col-sm-6 text-left">
+                    <h5 class="card-category">PCA Value</h5>
+                    <h2 class="card-title">Block Factor</h2>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="btn-group btn-group-toggle float-right" data-toggle="buttons">
+                      <label class="btn btn-sm btn-info btn-simple active" id="4">
+                        <input type="radio" name="options" checked>
+                        <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Block1</span>
+                        <span class="d-block d-sm-none">
+                          Block1
+                          
+                        </span>
+                      </label>
+                      <label class="btn btn-sm btn-info btn-simple" id="5">
+                        <input type="radio" class="d-none d-sm-none" name="options">
+                        <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Block2</span>
+                        <span class="d-block d-sm-none">
+                          Block2
+                          
+                        </span>
+                      </label>
+                      <label class="btn btn-sm btn-info btn-simple" id="6">
+                        <input type="radio" class="d-none" name="options">
+                        <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Block3</span>
+                        <span class="d-block d-sm-none">
+                          Block3
+                          
+                        </span>
+                      </label>
+                      <label class="btn btn-sm btn-info btn-simple" id="7">
+                        <input type="radio" class="d-none" name="options">
+                        <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Block4</span>
+                        <span class="d-block d-sm-none">
+                          Block4
+                          
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
               </div>
+              
               <div class="card-body">
                 <div class="chart-area">
-                  <canvas id="BarChart"></canvas>
+                  <canvas id="chartBig2"></canvas>
+                  <!-- <canvas id="BarChart"></canvas> -->
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <!-- <footer class="footer">
-        <div class="container-fluid">
-          <div class="copyright">
-            ©
-            <script>
-              document.write(new Date().getFullYear())
-            </script> made with <i class="tim-icons icon-heart-2"></i> by
-            <a href="https://www.creative-tim.com" target="_blank">Creative Tim</a> for a better web.
-          </div>
-        </div> 
-      </footer> -->
     </div>
   </div>
   <div class="fixed-plugin">
@@ -232,9 +225,9 @@
   <!-- Control Center for Black Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="{% static 'js/black-dashboard.min.js' %}"></script>
   <!-- Black Dashboard DEMO methods, don't include it in your project! -->
-  <script src="{% static 'demo/demo.js' %}"></script>
+  <!-- <script src="{% static 'demo/demo.js' %}"></script> -->
   {{ linePlot_data | json_script:"linePlot_data"}}
-  {{ barPlot_data | json_script:"barPlot_data"}}
+  {{ Factor_data | json_script:"Factor_data"}}
   
   <script type=text/javascript>
     $(document).ready(function() {
@@ -577,7 +570,7 @@ demo = {
       legend: {
         display: false
       },
-
+      
       tooltips: {
         backgroundColor: '#f5f5f5',
         titleFontColor: '#333',
@@ -598,10 +591,10 @@ demo = {
             zeroLineColor: "transparent",
           },
           ticks: {
-            suggestedMin: 50,
-            suggestedMax: 110,
+            suggestedMin: chart_data['tick_min'][0],
+            suggestedMax: chart_data['tick_max'][0],
             padding: 20,
-            fontColor: "#ff8a76"
+            fontColor: "#9a9a9a"
           }
         }],
 
@@ -614,7 +607,7 @@ demo = {
           },
           ticks: {
             padding: 20,
-            fontColor: "#ff8a76"
+            fontColor: "#9a9a9a"
           }
         }]
       }
@@ -720,7 +713,7 @@ demo = {
     };
 
     var chart_data = JSON.parse(document.getElementById('linePlot_data').textContent);
-    let chart_labels = chart_data['xlabel'];
+    var chart_labels = chart_data['xlabel'];
 
     var ctx = document.getElementById("chartBig1").getContext('2d');
 
@@ -780,6 +773,68 @@ demo = {
       myChartData.update();
     });
 
+    var chart_data2 = JSON.parse(document.getElementById('Factor_data').textContent);
+    var chart_labels2 = chart_data2['xlabel'];
+
+    var ctx = document.getElementById("chartBig2").getContext('2d');
+
+    var gradientStroke = ctx.createLinearGradient(0, 230, 0, 50);
+
+    gradientStroke.addColorStop(1, 'rgba(29,140,248,0.2)');
+    gradientStroke.addColorStop(0.4, 'rgba(29,140,248,0.0)');
+    gradientStroke.addColorStop(0, 'rgba(29,140,248,0)'); //blue colors
+    var config = {
+      type: 'line',
+      data: {
+        labels: chart_labels2,
+        datasets: [{
+          label: chart_data2['value_name'][0],
+          fill: true,
+          backgroundColor: gradientStroke,
+          borderColor: 'rgb(29,140,248)',
+          borderWidth: 2,
+          borderDash: [],
+          borderDashOffset: 0.0,
+          pointBackgroundColor: 'rgb(29,140,248)',
+          pointBorderColor: 'rgba(255,255,255,0)',
+          pointHoverBackgroundColor: 'rgb(29,140,248)',
+          pointBorderWidth: 20,
+          pointHoverRadius: 4,
+          pointHoverBorderWidth: 15,
+          pointRadius: 4,
+          data: chart_data2['data'][0],
+        }]
+      },
+      options: gradientChartOptionsConfigurationWithTooltipOrange
+    };
+    var myChartData2 = new Chart(ctx, config);
+    $("#4").click(function() {
+      var data = myChartData2.config.data;
+      data.datasets[0].data = chart_data2['data'][0];
+      data.datasets[0].label = chart_data2['value_name'][0];
+      data.labels = chart_labels2;
+      myChartData2.update();
+    });
+    $("#5").click(function() {
+      var data = myChartData2.config.data;
+      data.datasets[0].data = chart_data2['data'][1];
+      data.labels = chart_labels2;
+      myChartData2.update();
+    });
+
+    $("#6").click(function() {
+      var data = myChartData2.config.data;
+      data.datasets[0].data = chart_data2['data'][2];
+      data.labels = chart_labels2;
+      myChartData2.update();
+    });
+    $("#7").click(function() {
+      var data = myChartData2.config.data;
+      data.datasets[0].data = chart_data2['data'][3];
+      data.labels = chart_labels2;
+      myChartData2.update();
+    });
+
 
     var ctx = document.getElementById("BarChart").getContext("2d");
 
@@ -799,13 +854,13 @@ demo = {
     gradientStroke3.addColorStop(1, 'rgba(137,101,224,0.9)');
     gradientStroke3.addColorStop(0.4, 'rgba(137,101,224,0.4)');
     gradientStroke3.addColorStop(0, 'rgba(137,101,224,0)');
-    45, 206, 137
+
     var gradientStroke4 = ctx.createLinearGradient(0, 230, 0, 50);
     gradientStroke4.addColorStop(1, 'rgba(45,206,137,0.9)');
     gradientStroke4.addColorStop(0.4, 'rgba(45,206,137,0.4)');
     gradientStroke4.addColorStop(0, 'rgba(45,206,137,0)');
 
-    const bar_data = JSON.parse(document.getElementById('barPlot_data').textContent);
+    const bar_data = JSON.parse(document.getElementById('Factor_data').textContent);
 
     var myChart = new Chart(ctx, {
       type: 'bar',
