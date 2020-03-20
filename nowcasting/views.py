@@ -8,10 +8,10 @@ from itertools import chain
 def index(request):
     data_path = os.path.join(os.getcwd(),'nowcasting', 'csv_data')
     
-    # Stacked_bar Chart data. 
+    # Factor 데이터
     # 디렉토리의 가장 마지막에 있는 파일을 불러온다.
     factor_file = glob2.glob(os.path.join(data_path, 'Factor',"*.csv"))[-1]
-    factor = pd.read_csv(factor_file, index_col = 0)
+    factor = pd.read_csv(factor_file, index_col = 0).dropna()
     factor.index = pd.to_datetime(factor.index)
     # 뒤에서부터 8개의 row만 가져온다.
     factor_list = [list(factor[i].values[-8:]) for i in factor.columns]
